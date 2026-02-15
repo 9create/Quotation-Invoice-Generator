@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2196F3">
+    <title>Quotation Generator - Offline</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 Quotation Generator</h1>
+            <p class="subtitle">Generate professional quotations instantly - Works offline!</p>
+        </header>
+
+        <div class="form-section">
+            <div class="input-group">
+                <label>Document Type</label>
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button type="button" class="doc-type-btn active" id="quotationBtn" onclick="setDocType('quotation')">
+                        📋 Quotation
+                    </button>
+                    <button type="button" class="doc-type-btn" id="invoiceBtn" onclick="setDocType('invoice')">
+                        📄 Invoice
+                    </button>
+                </div>
+                <input type="hidden" id="docType" value="quotation">
+            </div>
+
+            <div class="input-group">
+                <label for="customerName">Customer/Company Name *</label>
+                <input type="text" id="customerName" placeholder="Enter customer name" required>
+            </div>
+
+            <div class="input-group">
+                <label for="customerGSTIN">Customer GSTIN (Optional)</label>
+                <input type="text" id="customerGSTIN" placeholder="22AAAAA0000A1Z5" maxlength="15">
+                <small style="color: #666;">Enter 15-digit GSTIN for GST invoice</small>
+            </div>
+
+            <div class="input-group">
+                <label for="customerState">Customer State *</label>
+                <select id="customerState">
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                    <option value="Karnataka">Karnataka</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Rajasthan">Rajasthan</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="industry">Industry Type</label>
+                <select id="industry">
+                    <option value="it">IT Services</option>
+                    <option value="manufacturing">Manufacturing</option>
+                    <option value="retail">Retail</option>
+                    <option value="consulting">Consulting</option>
+                    <option value="construction">Construction</option>
+                    <option value="education">Education/Training</option>
+                    <option value="general">General</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="productDesc">Product/Service Description *</label>
+                <div style="font-size: 0.85rem; color: #666; margin-bottom: 5px;">
+                    💡 Format: <code>Quantity Product @ Price</code> (Example: 5 Laptops @ 50000)
+                </div>
+                <textarea id="productDesc" rows="6" placeholder="5 Laptops @ 50000
+10 Software Licenses @ 5000
+Training @ 15000"></textarea>
+            </div>
+
+            <div class="input-group">
+                <label for="taxRate">GST Rate (%)</label>
+                <select id="taxRate">
+                    <option value="0">No Tax (0%)</option>
+                    <option value="5">5% GST</option>
+                    <option value="12">12% GST</option>
+                    <option value="18" selected>18% GST</option>
+                    <option value="28">28% GST</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="hsnCode">HSN/SAC Code (Optional)</label>
+                <input type="text" id="hsnCode" placeholder="e.g., 998314">
+                <small style="color: #666;">
+                    <a href="https://www.cbic.gov.in/resources//htdocs-cbec/gst/hsn-code.pdf" target="_blank" style="color: #667eea;">
+                        📋 Find HSN/SAC codes
+                    </a>
+                </small>
+            </div>
+
+            <button class="btn-generate" onclick="generateQuotation()"id="generateBtn">
+                ✨ Generate Quotation
+            </button>
+        </div>
+
+        <div class="output-section" id="outputSection" style="display: none;">
+            <div class="output-header">
+                <h2>Generated Quotation</h2>
+                <span class="edit-hint">📝 Click to edit</span>
+            </div>
+            
+            <div id="quotationDisplay" contenteditable="true" class="quotation-display">
+                <!-- Generated content will appear here -->
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-action btn-save" onclick="savePDF()">
+                    📄 Save as PDF
+                </button>
+                <button class="btn-action btn-copy" onclick="copyToClipboard()">
+                    📋 Copy Text
+                </button>
+                <button class="btn-action btn-new" onclick="resetForm()"" id="newBtn">
+                    🔄 New Quotation
+                </button>
+            </div>
+        </div>
+
+        <footer>
+            <p>💡 <span id="onlineStatus">Online</span> | Auto-saves locally | Works without internet</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Register service worker for offline functionality
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed'));
+        }
+
+        // Online/Offline status
+        function updateOnlineStatus() {
+            const status = document.getElementById('onlineStatus');
+            status.textContent = navigator.onLine ? 'Online ✅' : 'Offline 🔴';
+        }
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        updateOnlineStatus();
+    </script>
+</body>
+</html>
