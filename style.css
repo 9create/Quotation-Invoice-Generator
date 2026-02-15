@@ -281,3 +281,23 @@ footer {
     footer {
         display: none !important;
     }
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .quotation-display table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .quotation-display table th,
+    .quotation-display table td {
+        font-size: 0.85rem;
+        padding: 8px 6px;
+    }
+    
+    .quotation-display {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+}
